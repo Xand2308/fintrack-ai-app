@@ -42,3 +42,4 @@ next-env.d.ts
 .cursor/
 
 .vscode/
+/src/generated/prisma

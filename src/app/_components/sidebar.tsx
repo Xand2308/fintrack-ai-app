@@ -1,86 +1,70 @@
-import Image from "next/image";
+"use client";
+
 import Link from "next/link";
-import DashboardIcon from "../../assets/figma/sidebar/dashboard-icon.png";
-import Logo from "../../assets/figma/sidebar/logo.png";
-import LogoutIcon from "../../assets/figma/sidebar/logout-icon.png";
-import TransactionsIcon from "../../assets/figma/sidebar/transactions-icon.png";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
-const navItems = [
-  {
-    label: "Dashboard",
-    href: "/",
-    icon: DashboardIcon,
-    active: true,
-  },
-  {
-    label: "Transações",
-    href: "/transactions",
-    icon: TransactionsIcon,
-    active: false,
-  },
-] as const;
+import DashboardIcon from "@/assets/dashboard-icon.png";
+import TransactionsIcon from "@/assets/transactions-icon.png";
+import Logo from "@/assets/logo.png";
+import { LogoutButton } from "./logout";
 
-export const Sidebar = () => {
+export function Sidebar() {
+  const pathname = usePathname();
+
+  const navItems = [
+    {
+      label: "Dashboard",
+      href: "/",
+      icon: DashboardIcon,
+    },
+    {
+      label: "Transações",
+      href: "/transactions",
+      icon: TransactionsIcon,
+    },
+  ];
+
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-[#1e293b] bg-[#0f111a] font-sans">
-      <div className="flex items-center gap-3 px-6 py-6">
-        <div className="size-10 shrink-0 overflow-hidden">
-          <Image
-            src={Logo}
-            alt="FinTrack"
-            width={40}
-            height={46}
-            className="size-full object-contain"
-            priority
-          />
+    <aside className="w-64 border-r border-[#1d293d] flex flex-col bg-[#0f111a] min-h-screen">
+      <div className="p-6 flex items-center gap-3">
+        <div className="bg-primary/20 p-2.5 rounded-xl border border-primary/30 flex items-center justify-center">
+          <Image src={Logo} alt="FinTrack Logo" width={24} height={24} />
         </div>
-        <h1 className="text-xl font-bold tracking-[-0.5px] text-[#f1f5f9]">
-          FinTrack
-        </h1>
+        <h1 className="text-xl font-bold text-white tracking-tight">FinTrack</h1>
       </div>
 
-      <nav className="flex flex-1 flex-col gap-2 px-4 py-4">
-        {navItems.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium transition-colors ${
-              item.active
-                ? "bg-[#9333ea] text-white"
-                : "text-[#94a3b8] hover:bg-[#1e293b]/50"
-            }`}
-          >
-            <span className="size-5 shrink-0 overflow-hidden">
+      <nav className="flex-1 px-4 space-y-1.5 py-2">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 ${
+                isActive
+                  ? "bg-primary text-white shadow-lg shadow-primary/20"
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
               <Image
                 src={item.icon}
-                alt=""
+                alt={item.label}
                 width={20}
                 height={20}
-                className="size-full object-contain"
+                className={isActive ? "brightness-200" : "opacity-70"}
               />
-            </span>
-            {item.label}
-          </Link>
-        ))}
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
-      <div className="border-t border-[#1e293b] px-6 py-6">
-        <button
-          type="button"
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-base font-medium text-[#94a3b8] transition-colors hover:bg-[#1e293b]/50"
-        >
-          <span className="size-5 shrink-0 overflow-hidden">
-            <Image
-              src={LogoutIcon}
-              alt=""
-              width={20}
-              height={20}
-              className="size-full object-contain"
-            />
-          </span>
-          Sair
-        </button>
+      <div className="p-4 border-t border-[#1d293d]">
+        <LogoutButton />
       </div>
     </aside>
   );
-};
+}
+
+export default Sidebar;
